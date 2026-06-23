@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WFAS | US Forest Service</title>
+    <style>
+        :root {
+            --usfs-green: #004832;
+            --usfs-light-green: #eef3f0;
+            --usfs-accent: #fcd116; /* Gold accent */
+            --gray-light: #f0f0f0;
+            --text-dark: #1b1b1b;
+            --border-color: #d6d6d6;
+        }
+
+        body {
+            font-family: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Combined Header */
+        .site-header {
+            background-color: var(--usfs-green);
+            color: white;
+            padding: 20px 0;
+            border-bottom: 6px solid var(--usfs-accent);
+        }
+
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+
+        .header-flex {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        /* White Badge for Logo to maintain original colors */
+        .logo-container {
+            background-color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .usfs-logo { 
+            height: 65px; 
+            width: auto; 
+            display: block;
+        }
+
+        .header-text h1 { 
+            margin: 0; 
+            font-size: 28px; 
+            font-weight: 700; 
+            line-height: 1.1;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .header-text p { 
+            margin: 5px 0 0 0; 
+            font-size: 15px; 
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        /* Tabs Navigation */
+        .tabs-nav {
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tabs-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .tab-item {
+            padding: 18px 35px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--usfs-green);
+            border-bottom: 4px solid transparent;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .tab-item:hover { background-color: var(--usfs-light-green); }
+
+        .tab-item.active {
+            border-bottom: 4px solid var(--usfs-green);
+            color: var(--usfs-green);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Maps Controls */
+        .control-bar {
+            background-color: var(--usfs-light-green);
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .control-flex { display: flex; flex-wrap: wrap; gap: 30px; align-items: center; }
+        .control-section label {
+            display: block; font-size: 12px; font-weight: bold; 
+            text-transform: uppercase; margin-bottom: 8px; color: var(--usfs-green);
+        }
+
+        .btn-group { display: flex; background: white; border: 1px solid var(--usfs-green); border-radius: 4px; overflow: hidden; }
+        .btn {
+            background: white; border: none; padding: 10px 20px; font-size: 14px; 
+            font-weight: 600; cursor: pointer; color: var(--usfs-green); 
+            border-right: 1px solid var(--usfs-green);
+        }
+        .btn:last-child { border-right: none; }
+        .btn.active { background-color: var(--usfs-green); color: white; }
+
+        .map-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 30px; padding: 30px 0; }
+
+        .card { border: 1px solid var(--border-color); border-top: 5px solid var(--usfs-green); border-radius: 0 0 4px 4px; display: flex; flex-direction: column; background: #fff; }
+        .card-body { padding: 15px; flex-grow: 1; text-align: center; }
+        .card-body h3 { margin: 0 0 10px 0; font-size: 16px; color: var(--usfs-green); text-align: left; border-bottom: 1px solid var(--gray-light); padding-bottom: 10px; }
+        .card-body img { max-width: 100%; height: auto; margin: 10px 0; border: 1px solid #eee; cursor: zoom-in; }
+        .card-footer { background: #f9f9f9; padding: 15px; border-top: 1px solid var(--border-color); }
+        .btn-download { display: block; text-align: center; background-color: white; color: var(--usfs-green); border: 2px solid var(--usfs-green); padding: 8px; text-decoration: none; font-weight: bold; font-size: 13px; border-radius: 4px; }
+
+        /* About Tab Text */
+        .about-container { max-width: 900px; padding: 40px 0; line-height: 1.8; color: #333; font-size: 16px; }
+        .about-container h2 { color: var(--usfs-green); margin-top: 0; font-size: 28px; }
+        .about-container ul { padding-left: 20px; margin: 25px 0; }
+        .about-container li { margin-bottom: 12px; font-weight: 500; }
+
+        /* Footer */
+        .site-footer { 
+            background-color: var(--usfs-green); 
+            color: white; 
+            padding: 40px 0; 
+            margin-top: auto; 
+            border-top: 8px solid var(--usfs-accent); 
+        }
+        .site-footer p { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: 0.5px; }
+
+        /* Lightbox */
+        #lightbox { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; }
+        #lightbox img { max-width: 95%; max-height: 95%; border: 4px solid white; }
+
+        @media (max-width: 768px) {
+            .header-flex { flex-direction: column; text-align: center; gap: 15px; }
+            .header-text h1 { font-size: 22px; }
+            .tab-item { padding: 15px 15px; font-size: 12px; }
+            .map-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="container header-flex">
+        <div class="logo-container">
+            <img src="https://www.fs.usda.gov/themes/custom/fs_uswds/logo.svg" alt="US Forest Service Logo" class="usfs-logo">
+        </div>
+        <div class="header-text">
+            <h1>Wildland Fire Assessment System</h1>
+            <p>U.S. Forest Service | Fire, Fuel, and Smoke Science Program</p>
+        </div>
+    </div>
+</header>
+
+<nav class="tabs-nav">
+    <div class="container">
+        <div class="tabs-list">
+            <div class="tab-item active" onclick="openTab(event, 'MapsTab')">Maps</div>
+            <div class="tab-item" onclick="openTab(event, 'AboutTab')">About</div>
+        </div>
+    </div>
+</nav>
+
+<main>
+    <!-- MAPS TAB -->
+    <section id="MapsTab" class="tab-content active">
+        <div class="control-bar">
+            <div class="container">
+                <div class="control-flex">
+                    <div class="control-section">
+                        <label>Timeframe</label>
+                        <div class="btn-group" id="dateBtns">
+                            <button class="btn" onclick="updateDate('-1', this)">Yesterday</button>
+                            <button class="btn active" onclick="updateDate('0', this)">Today</button>
+                            <button class="btn" onclick="updateDate('1', this)">Tomorrow</button>
+                        </div>
+                    </div>
+                    <div class="control-section">
+                        <label>Data Category</label>
+                        <div class="btn-group" id="modeBtns">
+                            <button class="btn active" onclick="updateMode('O', this)">Observations</button>
+                            <button class="btn" onclick="updateMode('F', this)">Forecasts</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="map-grid" id="mainGrid"></div>
+        </div>
+    </section>
+
+    <!-- ABOUT TAB -->
+    <section id="AboutTab" class="tab-content">
+        <div class="container">
+            <div class="about-container">
+                <h2>About WFAS</h2>
+                <p>WFAS is an integrated, web-based platform providing real-time and forecasted national views of fire weather and fire potential across the United States. Access critical data, including:</p>
+                <ul>
+                    <li>National Fire Danger Ratings (NFDRS)</li>
+                    <li>Moisture Estimates (1-hr to 1000-hr)</li>
+                    <li>Drought Indices (Keetch-Byram, Palmer)</li>
+                    <li>Satellite-Derived Vegetation Conditions</li>
+                </ul>
+                <p>Whether you are a wildland firefighter, local, regional or national fire manager, industry risk manager, or concerned citizen, WFAS provides the multi-temporal and multi-spatial insights needed to support informed fire management decisions and reduce potential wildfire risk.</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>USFS, RMRS, Missoula Fire Sciences Laboratory</p>
+    </div>
+</footer>
+
+<div id="lightbox" onclick="this.style.display='none'">
+    <img id="lb-img" src="">
+</div>
+
+<script>
+    const baseUrl = "https://www.wfas.net/images/Figures/";
+    let state = { date: "0", mode: "O" };
+
+    const maps = [
+        { id: "Current_BIPercCls", title: "Burning Index Percentile" },
+        { id: "Current_ERCPercCls", title: "Energy Release Component Percentile" },
+        { id: "Current_KBDI", title: "Keetch-Byram Drought Index" },
+        { id: "Current_MC10", title: "10-Hour Dead Fuel Moisture" },
+        { id: "Current_MC100", title: "100-Hour Dead Fuel Moisture" },
+        { id: "Current_MC1000", title: "1000-Hour Dead Fuel Moisture" }
+    ];
+
+    function openTab(evt, tabName) {
+        let i, tabcontent, tabitems;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+        tabitems = document.getElementsByClassName("tab-item");
+        for (i = 0; i < tabitems.length; i++) { tabitems[i].classList.remove("active"); }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.classList.add("active");
+    }
+
+    function createCards() {
+        const grid = document.getElementById('mainGrid');
+        maps.forEach(map => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="card-body">
+                    <h3>${map.title}</h3>
+                    <img class="fire-map" data-base="${map.id}" 
+                         src="${baseUrl}${map.id}_${state.date}_${state.mode}.png" 
+                         onclick="openLightbox(this.src)">
+                </div>
+                <div class="card-footer">
+                    <a href="${baseUrl}${map.id}_${state.date}_${state.mode}.png" target="_blank" class="btn-download">View Full Image</a>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function updateDate(val, btn) {
+        state.date = val;
+        document.querySelectorAll('#dateBtns .btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        refresh();
+    }
+
+    function updateMode(val, btn) {
+        state.mode = val;
+        document.querySelectorAll('#modeBtns .btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        refresh();
+    }
+
+    function refresh() {
+        const images = document.querySelectorAll('.fire-map');
+        images.forEach(img => {
+            const base = img.getAttribute('data-base');
+            const newUrl = `${baseUrl}${base}_${state.date}_${state.mode}.png`;
+            img.src = newUrl;
+            img.closest('.card').querySelector('.btn-download').href = newUrl;
+        });
+    }
+
+    function openLightbox(src) {
+        document.getElementById('lb-img').src = src;
+        document.getElementById('lightbox').style.display = 'flex';
+    }
+
+    document.addEventListener('error', function (e) {
+        if (e.target.className === 'fire-map') {
+            e.target.src = "https://placehold.co/500x350/f0f0f0/999999?text=Data+Not+Available";
+        }
+    }, true);
+
+    window.onload = createCards;
+</script>
+
+</body>
+</html>
